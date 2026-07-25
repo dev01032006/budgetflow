@@ -1,0 +1,78 @@
+// This file describes the "shape" of our data.
+// Prisma reads this and builds the real database tables for us.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// A person using the app
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String   // stored as a secure hash, never plain text
+  name      String
+  currency  String   @default("USD")
+  createdAt DateTime @default(now())
+
+  categories   Category[]
+  transactions Transaction[]
+  budgets      Budget[]
+}
+
+// A spending/income label, e.g. "Food", "Rent", "Salary"
+model Category {
+  id        String   @id @default(uuid())
+  name      String
+  type      TransactionType
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
+
+  transactions Transaction[]
+  budgets      Budget[]
+}
+
+// One income or expense entry
+model Transaction {
+  id          String          @id @default(uuid())
+  amount      Float
+  type        TransactionType
+  description String?
+  date        DateTime
+  createdAt   DateTime        @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+}
+
+// A planned monthly spending limit, optionally per category
+model Budget {
+  id        String   @id @default(uuid())
+  amount    Float
+  month     Int      // 1-12
+  year      Int
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id])
+
+  @@unique([userId, categoryId, month, year])
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}

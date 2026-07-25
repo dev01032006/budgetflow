@@ -1,0 +1,2 @@
+export interface DashboardResponse { currentBalance: number; monthlyIncome: number; monthlyExpenses: number; monthlyBudget: number | null; budgetRemaining: number | null; isOverBudget: boolean; recentTransactions: RecentTransaction[]; }
+export interface RecentTransaction { id: string; amount: number; type: 'INCOME' | 'EXPENSE'; description: string | null; date: string; category: { id: string; name: string }; }

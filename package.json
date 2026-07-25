@@ -1,0 +1,13 @@
+{
+  "name": "budgetflow",
+  "private": true,
+  "version": "1.0.0",
+  "description": "BudgetFlow - Full-stack Budget & Expense Tracker",
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev:api": "npm run dev --workspace=apps/api",
+    "dev:web": "npm run dev --workspace=apps/web"
+  }
+}

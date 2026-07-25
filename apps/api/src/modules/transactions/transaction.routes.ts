@@ -1,0 +1,10 @@
+import { Router } from 'express';
+import { authenticate } from '../../middleware/authenticate.js';
+import { addTransaction, getTransactions, editTransaction, removeTransaction } from './transaction.controller.js';
+const router = Router();
+router.use(authenticate);
+router.post('/', addTransaction);
+router.get('/', getTransactions);
+router.put('/:id', editTransaction);
+router.delete('/:id', removeTransaction);
+export default router;

@@ -1,0 +1,9 @@
+import jwt from 'jsonwebtoken';
+import { AppError } from '../../utils/AppError.js';
+const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET ?? '';
+const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET ?? '';
+export interface TokenPayload { userId: string; }
+export function signAccessToken(payload: TokenPayload): string { return jwt.sign(payload, ACCESS_SECRET, { expiresIn: '15m' }); }
+export function signRefreshToken(payload: TokenPayload): string { return jwt.sign(payload, REFRESH_SECRET, { expiresIn: '7d' }); }
+export function verifyAccessToken(token: string): TokenPayload { try { return jwt.verify(token, ACCESS_SECRET) as TokenPayload; } catch { throw new AppError('Invalid or expired access token', 401); } }
+export function verifyRefreshToken(token: string): TokenPayload { try { return jwt.verify(token, REFRESH_SECRET) as TokenPayload; } catch { throw new AppError('Invalid or expired refresh token', 401); } }
